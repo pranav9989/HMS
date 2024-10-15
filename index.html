@@ -1,75 +1,19 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Hospital Management System</title>
-    <style>
-        body {
-            margin: 0;
-            font-family: Arial, sans-serif;
-            background-color: #f4f4f4;
-        }
-
-        header {
-            position: fixed; 
-            top: 0; 
-            left: 0; 
-            right: 0; 
-            background-color: #333; 
-            color: white; 
-            padding: 10px; 
-            z-index: 1000; 
-            transition: 1.5s;
-        }
-
-        header:hover {
-            background-color: rgb(29, 28, 28);
-        }
-
-        nav ul {
-            display: flex;
-            gap: 50px;
-            font-size: 20px;
-            list-style: none;
-            margin: 0;
-            padding: 0;
-        }
-        
-        nav a {
-            color: white;
-            text-decoration: none;
-            padding: 8px 16px;
-            border-radius: 4px;
-            transition: background-color 0.3s;
-        }
-
-        nav a:hover {
-            background-color: rgba(255, 255, 255, 0.2);
-        }
-
-        main {
-            padding-top: 80px; 
-        }
-
-        .welcome {
-            text-align: center;
-            margin-top: 50px;
-        }
-
-        .welcome p {
-            font-size: 50px;
-            font-weight: bold;
-            color: rgb(29, 28, 28);
-        }
-
-    </style>
+    <link rel="stylesheet" href="styles.css">
 </head>
+
 <body>
     <header>
+        <h1>Welcome to Our Hospital</h1>
         <nav>
             <ul>
-                <li><a href="index.html">HMS</a></li>
+                <li><a href="index.html">Home</a></li>
                 <li><a href="patient.html">Patient Management</a></li>
                 <li><a href="doctor.html">Doctor Management</a></li>
                 <li><a href="appointment.html">Appointment Booking</a></li>
@@ -79,10 +23,41 @@
         </nav>
     </header>
 
-    <main>
-        <div class="welcome">
-            <p>WELCOME</p>
+    <section class="hero">
+        
+        
+        <a href="#services" class="btn">Explore Services</a>
+    </section>
+
+    <section id="services" class="services">
+        <h2>Our Services</h2>
+        <div class="service-card">
+            <h3>Emergency Care</h3>
+            <p>24/7 emergency services to address urgent health issues.</p>
         </div>
-    </main>
+        <div class="service-card">
+            <h3>Outpatient Care</h3>
+            <p>Comprehensive outpatient services for all patients.</p>
+        </div>
+        <div class="service-card">
+            <h3>Surgery</h3>
+            <p>Advanced surgical procedures with experienced surgeons.</p>
+        </div>
+    </section>
+
+    <section id="about" class="about">
+        <h2>About Us</h2>
+        <p>We are committed to providing high-quality healthcare services with compassion and respect.</p>
+    </section>
+
+    <footer>
+        <h2>Contact Us</h2>
+        <p>Email: info@hospital.com</p>
+        <p>Phone: +1 234 567 890</p>
+        <p>&copy; 2024 Hospital Management System</p>
+    </footer>
+
+    <script src="script.js"></script>
 </body>
+
 </html>
