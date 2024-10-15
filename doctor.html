@@ -5,7 +5,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Doctor Management</title>
     <style>
-        /* Common Styling */
+        /* General styling */
+        body {
+            font-family: Arial, sans-serif;
+            padding-top: 100px;
+            margin: 0;
+            background-color: #f4f4f4;
+        }
+
         nav {
             display: flex;
             justify-content: space-between;
@@ -18,6 +25,7 @@
             right: 0;
             z-index: 1000;
         }
+
         nav ul {
             list-style-type: none;
             margin: 0;
@@ -25,29 +33,26 @@
             display: flex;
             gap: 20px;
         }
-        nav ul li {
-            display: inline;
-        }
+
         nav a {
             text-decoration: none;
             color: white;
             font-size: 20px;
             padding: 8px 16px;
-            transition: 1s;
+            transition: background-color 0.3s;
         }
+
         nav a:hover {
-            background-color: #000000;
+            background-color: #000;
             border-radius: 5px;
         }
 
-        body {
-            padding-top: 100px;
-            font-family: Arial, sans-serif;
-        }
-
         form {
-            margin-left: 20px;
-            margin-top: 20px;
+            margin: 20px;
+            background-color: white;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
         }
 
         label {
@@ -60,6 +65,8 @@
             padding: 8px;
             width: 100%;
             max-width: 400px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
         }
 
         button {
@@ -67,11 +74,22 @@
             background-color: #333;
             color: white;
             border: none;
+            border-radius: 5px;
             cursor: pointer;
         }
 
         button:hover {
             background-color: #555;
+        }
+
+        .success-message {
+            color: green;
+            margin-top: 20px;
+        }
+
+        .error-message {
+            color: red;
+            margin-top: 20px;
         }
     </style>
 </head>
@@ -89,10 +107,7 @@
         </nav>
     </header>
 
-    <h2>Doctor Management</h2>
-
-    <!-- Register Doctor -->
-    <h3>Register Doctor</h3>
+    <h3 style="text-align: center;">Register Doctor</h3>
     <form id="doctorForm">
         <label for="docId">Doctor ID:</label>
         <input type="text" id="docId" required><br>
@@ -123,10 +138,11 @@
         <label for="age">Age:</label>
         <input type="number" id="age" min="25" max="100" required><br>
 
-        
-
         <button type="button" onclick="registerDoctor()">Register</button>
     </form>
+
+    <div id="successMessage" class="success-message"></div>
+    <div id="errorMessage" class="error-message"></div>
 
     <script src="script.js"></script>
 </body>

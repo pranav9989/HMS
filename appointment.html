@@ -6,6 +6,13 @@
     <title>Appointment Booking</title>
     <style>
         /* Common Styling */
+        body {
+            font-family: Arial, sans-serif;
+            padding-top: 100px;
+            margin: 0;
+            background-color: #f4f4f4;
+        }
+
         nav {
             display: flex;
             justify-content: space-between;
@@ -27,31 +34,25 @@
             gap: 20px;
         }
 
-        nav ul li {
-            display: inline;
-        }
-
         nav a {
             text-decoration: none;
             color: white;
             font-size: 20px;
             padding: 8px 16px;
-            transition: 1s;
+            transition: background-color 0.3s;
         }
 
         nav a:hover {
-            background-color: #000000;
+            background-color: #000;
             border-radius: 5px;
         }
 
-        body {
-            padding-top: 100px;
-            font-family: Arial, sans-serif;
-        }
-
         form {
-            margin-left: 20px;
-            margin-top: 20px;
+            margin: 20px;
+            background-color: white;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
         }
 
         label {
@@ -64,6 +65,8 @@
             padding: 8px;
             width: 100%;
             max-width: 400px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
         }
 
         button {
@@ -71,12 +74,30 @@
             background-color: #333;
             color: white;
             border: none;
+            border-radius: 5px;
             cursor: pointer;
         }
 
         button:hover {
             background-color: #555;
         }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        th, td {
+            border: 1px solid #333;
+            padding: 8px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+
     </style>
 </head>
 <body>
@@ -93,9 +114,9 @@
         </nav>
     </header>
 
-    <h2>Appointment Booking</h2>
+    <h2 style="text-align: center;">Appointment Booking</h2>
 
-    <h3>Book Appointment</h3>
+    <h3 style="text-align: center;">Book Appointment</h3>
     <form id="bookAppointmentForm">
         <label for="bookPatientId">Patient ID:</label>
         <input type="text" id="bookPatientId" required><br>
@@ -109,7 +130,7 @@
         <button type="button" onclick="bookAppointment()">Book</button>
     </form>
 
-    <h3>View Appointments</h3>
+    <h3 style="text-align: center;">View Appointments</h3>
     <form id="viewAppointmentsForm">
         <label for="viewAppPatientId">Patient ID:</label>
         <input type="text" id="viewAppPatientId" required><br>

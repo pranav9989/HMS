@@ -7,50 +7,60 @@ function saveData(key, data) {
     localStorage.setItem(key, JSON.stringify(data));
 }
 
-// Register Patient
-function registerPatient() {
-    const patientId = document.getElementById('patient-id').value;
-    const firstName = document.getElementById('firstName').value;
-    const lastName = document.getElementById('lastName').value;
-    const dob = document.getElementById('dob').value;
-    const gender = document.getElementById('gender').value;
-    const phone = document.getElementById('phone').value;
-
-    if (patientId && firstName && lastName && dob && phone) {
-        const patients = getData('patients');
-
-        // Check if patient ID already exists
-        const existingPatient = patients.find(patient => patient.id === patientId);
-        if (existingPatient) {
-            document.getElementById('successMessage').innerText = 'Patient ID already exists!';
-            return;
-        }
-
-        // Create new patient object
-        const newPatient = {
-            id: patientId,
-            firstName: firstName,
-            lastName: lastName,
-            dob: dob,
-            gender: gender,
-            phone: phone
-        };
-
-        // Add patient to local storage
-        patients.push(newPatient);
-        saveData('patients', patients);
-
-        document.getElementById('successMessage').innerText = 'Patient Registered Successfully!';
-        document.getElementById('patientForm').reset();
-
-        // Upload data to ThingSpeak
-        uploadDataToThingSpeak('patients', newPatient);
-    } 
-    else {
-        document.getElementById('successMessage').innerText = 'Please fill in all the fields!';
-    }
+// Validate phone number
+function isValidPhoneNumber(phone) {
+    const phonePattern = /^\d{10}$/; // Adjust the pattern as per your requirement
+    return phonePattern.test(phone);
 }
 
+// Register Patient
+function registerPatient() {
+    const patientId = document.getElementById('patient-id').value.trim();
+    const firstName = document.getElementById('firstName').value.trim();
+    const lastName = document.getElementById('lastName').value.trim();
+    const dob = document.getElementById('dob').value.trim();
+    const gender = document.getElementById('gender').value;
+    const phone = document.getElementById('phone').value.trim();
+
+    // Form validation
+    if (!patientId || !firstName || !lastName || !dob || !phone) {
+        alert('Please fill in all the fields!');
+        return;
+    }
+
+    if (!isValidPhoneNumber(phone)) {
+        alert('Please enter a valid phone number (10 digits)!');
+        return;
+    }
+
+    const patients = getData('patients');
+
+    // Check if patient ID already exists
+    const existingPatient = patients.find(patient => patient.id === patientId);
+    if (existingPatient) {
+        alert('Patient ID already exists!');
+        return;
+    }
+
+    // Create new patient object
+    const newPatient = {
+        id: patientId,
+        firstName: firstName,
+        lastName: lastName,
+        dob: dob,
+        gender: gender,
+        phone: phone
+    };
+
+    // Add patient to local storage
+    patients.push(newPatient);
+    saveData('patients', patients);
+
+    alert('Patient Registered Successfully!');
+    document.getElementById('patientForm').reset();
+}
+
+// Register Doctor
 // Register Doctor
 function registerDoctor() {
     const doctorId = document.getElementById('docId').value;
@@ -62,40 +72,49 @@ function registerDoctor() {
     const age = document.getElementById('age').value;
     const dob = document.getElementById('dob').value;
 
-    if (doctorId && firstName && lastName && specialty && experience && age && dob) {
-        const doctors = getData('doctors');
-
-        // Check if doctor ID already exists
-        const existingDoctor = doctors.find(doctor => doctor.id === doctorId);
-        if (existingDoctor) {
-            alert('Doctor ID already exists!');
-            return;
-        }
-
-        // Create new doctor object
-        const newDoctor = {
-            id: doctorId,
-            firstName: firstName,
-            lastName: lastName,
-            gender : gender,
-            specialty: specialty,
-            experience: experience,
-            age: age,
-            dob: dob
-        };
-
-        // Add doctor to local storage
-        doctors.push(newDoctor);
-        saveData('doctors', doctors);
-
-        alert('Doctor Registered Successfully!');
-        document.getElementById('doctorForm').reset();
-
-        // Upload data to ThingSpeak
-        uploadDataToThingSpeak('doctors', newDoctor);
-    } else {
+    // Form Validation
+    if (!doctorId || !firstName || !lastName || !specialty || !experience || !age || !dob || gender === "") {
         alert('Please fill in all the fields!');
+        return;
     }
+
+    // Check for valid age and experience
+    if (age < 25 || age > 100) {
+        alert('Age must be between 25 and 100!');
+        return;
+    }
+    if (experience < 0) {
+        alert('Experience cannot be negative!');
+        return;
+    }
+
+    const doctors = getData('doctors');
+
+    // Check if doctor ID already exists
+    const existingDoctor = doctors.find(doctor => doctor.id === doctorId);
+    if (existingDoctor) {
+        alert('Doctor ID already exists!');
+        return;
+    }
+
+    // Create new doctor object
+    const newDoctor = {
+        id: doctorId,
+        firstName: firstName,
+        lastName: lastName,
+        gender: gender,
+        specialty: specialty,
+        experience: experience,
+        age: age,
+        dob: dob
+    };
+
+    // Add doctor to local storage
+    doctors.push(newDoctor);
+    saveData('doctors', doctors);
+
+    alert('Doctor Registered Successfully!');
+    document.getElementById('doctorForm').reset();
 }
 
 // Schedule Doctor Appointment
@@ -104,48 +123,57 @@ function bookAppointment() {
     const patientId = document.getElementById('bookPatientId').value;
     const doctorId = document.getElementById('bookDoctorId').value;
     const appointmentDate = document.getElementById('bookAppointmentDate').value;
+    const bookingErrorDiv = document.getElementById('bookingError');
 
-    if (patientId && doctorId && appointmentDate) {
-        const appointments = getData('appointments');
+    // Reset error messages
+    bookingErrorDiv.textContent = '';
 
-        // Create appointment object
-        const appointment = {
-            patientId: patientId,
-            doctorId: doctorId,
-            date: appointmentDate
-        };
-
-        // Save appointment to local storage
-        appointments.push(appointment);
-        saveData('appointments', appointments);
-
-        alert('Appointment Booked Successfully!');
-        document.getElementById('bookAppointmentForm').reset();
-    } else {
+    // Validation
+    if (!patientId || !doctorId || !appointmentDate) {
         alert('Please fill in all the fields!');
+        return;
     }
+
+    const appointments = getData('appointments');
+
+    // Create appointment object
+    const appointment = {
+        patientId: patientId,
+        doctorId: doctorId,
+        date: appointmentDate
+    };
+
+    // Save appointment to local storage
+    appointments.push(appointment);
+    saveData('appointments', appointments);
+
+    alert('Appointment Booked Successfully!');
+    document.getElementById('bookAppointmentForm').reset();
 }
 
 // View Appointments
 function viewAppointments() {
     const patientId = document.getElementById('viewAppPatientId').value;
     const appointments = getData('appointments');
+    const appointmentsDiv = document.getElementById('appointments');
 
     if (!patientId) {
-        alert('Please enter a valid Patient ID');
+       alert('Please enter a valid Patient ID');
         return;
     }
 
     const patientAppointments = appointments.filter(a => a.patientId === patientId);
 
-    const appointmentsDiv = document.getElementById('appointments');
     if (patientAppointments.length > 0) {
-        appointmentsDiv.innerHTML = '<h4>Your Appointments:</h4>';
+        let tableHTML = '<h4>Your Appointments:</h4>';
+        tableHTML += '<table><tr><th>Doctor ID</th><th>Date</th></tr>';
         patientAppointments.forEach(app => {
-            appointmentsDiv.innerHTML += `<p>Doctor ID: ${app.doctorId} on ${app.date}</p>`;
+            tableHTML += `<tr><td>${app.doctorId}</td><td>${app.date}</td></tr>`;
         });
+        tableHTML += '</table>';
+        appointmentsDiv.innerHTML = tableHTML;
     } else {
-        appointmentsDiv.innerHTML = '<p>No Appointments Found!</p>';
+        alert("No Appointments found for this ID");
     }
 }
 
@@ -157,7 +185,36 @@ function generateBill() {
     const hospitalizationCharge = document.getElementById('hospitalization-charge').value;
     const totalAmount = document.getElementById('totalAmount').value;
 
-    if (patientId && medicineCost && consultingCost && hospitalizationCharge && totalAmount) {
+    // Clear previous error messages
+    clearErrors();
+
+    let isValid = true;
+
+    // Validate Patient ID
+    if (!patientId) {
+        document.getElementById('patientIdError').innerText = 'Patient ID is required.';
+        isValid = false;
+    }
+
+    // Validate Costs
+    if (!isNumeric(medicineCost) || medicineCost < 0) {
+        document.getElementById('medicineCostError').innerText = 'Please enter a valid medicine cost.';
+        isValid = false;
+    }
+    if (!isNumeric(consultingCost) || consultingCost < 0) {
+        document.getElementById('consultingCostError').innerText = 'Please enter a valid consulting cost.';
+        isValid = false;
+    }
+    if (!isNumeric(hospitalizationCharge) || hospitalizationCharge < 0) {
+        document.getElementById('hospitalizationChargeError').innerText = 'Please enter a valid hospitalization charge.';
+        isValid = false;
+    }
+    if (!isNumeric(totalAmount) || totalAmount < 0) {
+        document.getElementById('totalAmountError').innerText = 'Please enter a valid total amount.';
+        isValid = false;
+    }
+
+    if (isValid) {
         const patients = getData('patients');
         const bills = getData('bills');
 
@@ -184,17 +241,18 @@ function generateBill() {
 
         alert('Bill Generated Successfully!');
         document.getElementById('billingForm').reset();
-    } else {
-        alert('Please fill in all the fields!');
     }
 }
 
-// View Bills
+/// View Bills
 function viewBills() {
     const patientId = document.getElementById('viewBillPatientId').value;
 
+    // Clear previous error messages
+    clearErrors();
+
     if (!patientId) {
-        alert('Please enter a valid Patient ID');
+        document.getElementById('viewPatientIdError').innerText = 'Please enter a valid Patient ID';
         return;
     }
 
@@ -202,15 +260,58 @@ function viewBills() {
     const patientBills = bills.filter(b => b.patientId === patientId);
     
     const billsDiv = document.getElementById('bills');
+    billsDiv.innerHTML = ''; // Clear previous bills display
+
     if (patientBills.length > 0) {
-        billsDiv.innerHTML = '<h4>Your Bills:</h4>';
+        // Create a div for the bills
+        let tableHTML = `
+            <div class="bills-container">
+                <h4>Your Bills:</h4>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Medicine Cost</th>
+                            <th>Consulting Cost</th>
+                            <th>Hospitalization Charge</th>
+                            <th>Total Amount</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+        `;
+        
         patientBills.forEach(bill => {
-            billsDiv.innerHTML += `<p>Medicine Cost: ${bill.medicineCost}, Consulting Cost: ${bill.consultingCost}, 
-            Hospitalization Charge: ${bill.hospitalizationCharge}, Total Amount: ${bill.totalAmount} on ${bill.date}</p>`;
+            tableHTML += `
+                <tr>
+                    <td>${bill.date}</td>
+                    <td>${bill.medicineCost}</td>
+                    <td>${bill.consultingCost}</td>
+                    <td>${bill.hospitalizationCharge}</td>
+                    <td>${bill.totalAmount}</td>
+                </tr>
+            `;
         });
+
+        tableHTML += `
+                    </tbody>
+                </table>
+            </div>
+        `;
+
+        billsDiv.innerHTML = tableHTML;
     } else {
-        billsDiv.innerHTML = '<p>No Bills Found!</p>';
+        alert('No Bills Found!');
     }
+}
+
+// Helper Functions
+function isNumeric(value) {
+    return !isNaN(value) && value.trim() !== '';
+}
+
+function clearErrors() {
+    const errorElements = document.querySelectorAll('.error');
+    errorElements.forEach(el => el.innerText = '');
 }
 
 // View Patient Details
@@ -242,107 +343,72 @@ function viewPatientDetails() {
     }
 }
 
-// Admin - View Doctor Details
-function viewBills() {
-    const patientId = document.getElementById('viewBillPatientId').value;
+// View Doctor Details by ID
+function viewDoctorDetails() {
+    const doctorId = document.getElementById('manageDoctorId').value;
+    const doctors = getData('doctors');
+    const doctor = doctors.find(d => d.id === doctorId);
 
-    if (!patientId) {
-        alert('Please enter a valid Patient ID');
-        return;
-    }
-
-    const bills = getData('bills');
-    const patientBills = bills.filter(b => b.patientId === patientId);
-    
-    const billsDiv = document.getElementById('bills');
-    if (patientBills.length > 0) {
-        billsDiv.innerHTML = '<h4>Your Bills:</h4>';
-        patientBills.forEach(bill => {
-            billsDiv.innerHTML += `<p>Medicine Cost: ${bill.medicineCost}, Consulting Cost: ${bill.consultingCost}, 
-            Hospitalization Charge: ${bill.hospitalizationCharge}, Total Amount: ${bill.totalAmount} on ${bill.date}</p>`;
-        });
+    if (doctor) {
+        document.getElementById('doctorId').innerText = doctor.id;
+        document.getElementById('doctorName').innerText = `${doctor.firstName} ${doctor.lastName}`;
+        document.getElementById('doctorGender').innerText = doctor.gender;
+        document.getElementById('doctorSpecialty').innerText = doctor.specialty;
+        document.getElementById('doctorExperience').innerText = doctor.experience;
+        document.getElementById('doctorAge').innerText = doctor.age;
+        document.getElementById('doctorDetails').style.display = 'block';
+        document.getElementById('errorMessageDoctor').style.display = 'none'; // Hide error message
     } else {
-        billsDiv.innerHTML = '<p>No Bills Found!</p>';
+        document.getElementById('doctorDetails').style.display = 'none'; // Hide details
+        alert("Doctor ID not found");
+        
     }
 }
 
-
-// Delete Patient
+// Delete Patient by ID
 function deletePatientById() {
-    const patientId = document.getElementById('deletePatientId'); // Get the input field for Patient ID
-    const patients = getData('patients'); // Retrieve the current patient records from local storage
+    const patientId = document.getElementById('deletePatientId').value;
+    let patients = getData('patients');
+    const initialLength = patients.length;
 
-    // Check if Patient ID is provided
-    if (!patientId.value) {
-        showMessage('successMessage', 'Please enter a valid Patient ID');
-        return;
-    }
+    //
+    patients = patients.filter(p => p.id !== patientId);
+    saveData('patients', patients);
 
-    // Find the index of the patient with the given ID
-    const patientIndex = patients.findIndex(patient => patient.id === patientId.value);
-
-    // If the patient is found, remove it from the array
-    if (patientIndex !== -1) {
-        patients.splice(patientIndex, 1); // Remove the patient from the array
-        saveData('patients', patients); // Update local storage with the new array
-        showMessage('successMessage', 'Patient record deleted successfully!'); // Notify the user
-        document.getElementById('deletePatientForm').reset(); // Reset the form
+    if (patients.length < initialLength) {
+        alert(`Patient with ID ${patientId} has been deleted successfully.`);
+        document.getElementById('successMessage').style.display = 'block'; // Show success message
+        document.getElementById('errorMessage').style.display = 'none'; // Hide error message
     } else {
-        // If the patient is not found, show an error message
-        showMessage('successMessage', 'Patient ID not found!');
+        alert(`Patient ID ${patientId} not found.`);
+        document.getElementById('errorMessage').style.display = 'block'; // Show error message
+        document.getElementById('successMessage').style.display = 'none'; // Hide success message
     }
+
+    // Clear the input field
+    document.getElementById('deletePatientId').value = '';
 }
 
-// Delete Doctor
+// Delete Doctor by ID
 function deleteDoctorById() {
-    const doctorId = document.getElementById('deleteDoctorId'); // Get the input field for Doctor ID
-    const doctors = getData('doctors'); // Retrieve the current doctor records from local storage
+    const doctorId = document.getElementById('deleteDoctorId').value;
+    let doctors = getData('doctors');
+    const initialLength = doctors.length;
 
-    // Check if Doctor ID is provided
-    if (!doctorId.value) {
-        showMessage('successMessage', 'Please enter a valid Doctor ID');
-        return;
-    }
+    // Filter out the doctor
+    doctors = doctors.filter(d => d.id !== doctorId);
+    saveData('doctors', doctors);
 
-    // Find the index of the doctor with the given ID
-    const doctorIndex = doctors.findIndex(doctor => doctor.id === doctorId.value);
-
-    // If the doctor is found, remove it from the array
-    if (doctorIndex !== -1) {
-        doctors.splice(doctorIndex, 1); // Remove the doctor from the array
-        saveData('doctors', doctors); // Update local storage with the new array
-        showMessage('successMessage', 'Doctor record deleted successfully!'); // Notify the user
-        document.getElementById('deleteDoctorForm').reset(); // Reset the form
+    if (doctors.length < initialLength) {
+        alert(`Doctor with ID ${doctorId} has been deleted successfully.`);
+        document.getElementById('successMessageDoctor').style.display = 'block'; // Show success message
+        document.getElementById('errorMessageDoctor').style.display = 'none'; // Hide error message
     } else {
-        // If the doctor is not found, show an error message
-        showMessage('successMessage', 'Doctor ID not found!');
+        alert(`Doctor ID ${doctorId} not found.`);
+        document.getElementById('errorMessageDoctor').style.display = 'block'; // Show error message
+        document.getElementById('successMessageDoctor').style.display = 'none'; // Hide success message
     }
-}
 
-// Upload Data to ThingSpeak
-function uploadDataToThingSpeak(entityType, entityData) {
-    const channelId = '2694015'; // Replace with your ThingSpeak Channel ID
-    const writeApiKey = 'UMIURC254Y2DAGB3'; // Replace with your ThingSpeak Write API Key
-
-    const url = `https://api.thingspeak.com/update?api_key=${writeApiKey}`;
-    
-    // Prepare the data to be sent to ThingSpeak
-    const data = {
-        field1: entityData.id,
-        field2: entityType === 'patients' ? 'Patient' : 'Doctor',
-        field3: entityData.firstName || entityData.first_name,
-        field4: entityData.lastName || entityData.last_name,
-        // You can add more fields as needed
-    };
-
-    // Send the data to ThingSpeak
-    fetch(url + '&' + new URLSearchParams(data))
-        .then(response => {
-            if (response.ok) {
-                console.log('Data uploaded to ThingSpeak successfully');
-            } else {
-                console.error('Error uploading data to ThingSpeak:', response.statusText);
-            }
-        })
-        .catch(error => console.error('Error:', error));
+    // Clear the input field
+    document.getElementById('deleteDoctorId').value = '';
 }
