@@ -1,67 +1,89 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Dashboard</title>
-    <!-- Bootstrap CSS -->
+    <!-- Include Bootstrap CSS -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <style>
-        /* Custom Styling */
         body {
-            padding-top: 100px; /* Adjusted padding to match Appointment Booking */
-            background-color: #f8f9fa; /* Light gray background */
+            padding-top: 100px;
+            background-color: #f8f9fa; /* Light background color */
             font-family: 'Arial', sans-serif;
         }
+
         nav {
             background-color: #0056b3; /* Navy blue for header */
         }
+
         nav a {
             color: white !important; /* White text for navigation links */
         }
+
         nav a:hover {
             background-color: #003d80 !important; /* Darker shade on hover */
         }
-        .container {
-            margin-top: 20px;
-        }
-        .form-section {
-            background-color: #fff; /* White background for forms */
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-            margin-bottom: 20px;
-        }
+
         h2, h3 {
             color: #0056b3; /* Consistent heading color */
         }
+
+        .form-container {
+            background-color: #fff; /* White background for forms */
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        button {
+            background-color: #0056b3;
+            color: white;
+        }
+
+        button:hover {
+            background-color: #003d80;
+        }
+
         .success-message {
             color: green;
-            font-weight: bold;
-            margin-top: 10px;
+            margin-top: 20px;
+        }
+
+        .error-message {
+            color: red;
+            margin-top: 20px;
         }
     </style>
 </head>
-<body>
 
-    <nav class="navbar navbar-expand-lg navbar-dark fixed-top">
-        <a class="navbar-brand" href="">Hospital Management</a>
-        <div class="collapse navbar-collapse">
-            <ul class="navbar-nav ml-auto">
-                <li class="nav-item"><a class="nav-link" href="index.html">Home</a></li>
-                <li class="nav-item"><a class="nav-link" href="patient.html">Patient Management</a></li>
-                <li class="nav-item"><a class="nav-link" href="doctor.html">Doctor Management</a></li>
-                <li class="nav-item"><a class="nav-link" href="appointment.html">Appointment Booking</a></li>
-                <li class="nav-item"><a class="nav-link" href="billing.html">Billing System</a></li>
-                <li class="nav-item"><a class="nav-link active" href="admin.html">Admin Dashboard</a></li>
-            </ul>
-        </div>
-    </nav>
+<body>
+    <header>
+        <nav class="navbar navbar-expand-lg navbar-dark fixed-top">
+            <a class="navbar-brand" href="">Hospital Management</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ml-auto">
+                    <li class="nav-item"><a class="nav-link" href="index.html">Home</a></li>
+                    <li class="nav-item"><a class="nav-link" href="patient.html">Patient Management</a></li>
+                    <li class="nav-item"><a class="nav-link" href="doctor.html">Doctor Management</a></li>
+                    <li class="nav-item"><a class="nav-link" href="appointment.html">Appointment Booking</a></li>
+                    <li class="nav-item"><a class="nav-link" href="billing.html">Billing System</a></li>
+                    <li class="nav-item"><a class="nav-link" href="admin.html">Admin Dashboard</a></li>
+                </ul>
+            </div>
+        </nav>
+    </header>
 
     <div class="container">
-        <h2 class="text-center">Admin Dashboard</h2>
+        <h2>Admin Dashboard</h2>
 
-        <div class="form-section">
+        <div class="form-container">
             <h3>Manage Patients</h3>
             <form id="managePatientForm">
                 <div class="form-group">
@@ -71,7 +93,7 @@
                 <button type="button" class="btn btn-primary" onclick="viewPatientDetails()">View Patient Details</button>
             </form>
 
-            <div id="patientDetails" style="display: none;">
+            <div id="patientDetails">
                 <h4>Patient Information:</h4>
                 <p><strong>ID:</strong> <span id="patientId"></span></p>
                 <p><strong>Name:</strong> <span id="patientName"></span></p>
@@ -88,7 +110,7 @@
             <div id="successMessage" class="success-message" style="display:none;"></div>
         </div>
 
-        <div class="form-section">
+        <div class="form-container">
             <h3>Manage Doctors</h3>
             <form id="manageDoctorForm">
                 <div class="form-group">
@@ -98,7 +120,7 @@
                 <button type="button" class="btn btn-primary" onclick="viewDoctorDetails()">View Doctor Details</button>
             </form>
 
-            <div id="doctorDetails" style="display: none;">
+            <div id="doctorDetails">
                 <h4>Doctor Information:</h4>
                 <p><strong>ID:</strong> <span id="doctorId"></span></p>
                 <p><strong>Name:</strong> <span id="doctorName"></span></p>
@@ -113,14 +135,15 @@
                 <input type="text" class="form-control" id="deleteDoctorId" placeholder="Enter Doctor ID" required>
                 <button type="submit" class="btn btn-danger">Delete Doctor</button>
             </form>
-            <div id="successMessageDoctor" class="success-message" style="display:none;"></div>
+            <div id="successMessage" class="success-message" style="display:none;"></div>
         </div>
     </div>
 
-    <!-- Bootstrap JS and dependencies -->
+    <!-- Include Bootstrap JS and jQuery -->
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-    <script src="script.js" type="module"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="script.js"></script>
 </body>
+
 </html>
